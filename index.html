@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EroMood - 今の気分で即診断</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans JP', sans-serif; background: #111111; color: #f1f1f1; }
+    .card { transition: all 0.25s ease; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 15px -3px rgb(0 0 0 / 0.3); }
+    .tab { transition: all 0.2s; }
+    .tab.active { background-color: #e11d48; color: white; }
+    .source-btn { transition: all 0.2s; }
+    .source-btn.active { background-color: #e11d48; color: white; }
+    .nav-btn { transition: all 0.2s; }
+    .nav-btn.active { background-color: #e11d48; color: white; }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+
+  <!-- ヘッダー -->
+  <nav class="bg-zinc-950 py-4 border-b border-zinc-800">
+    <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
+      <span class="text-3xl font-bold text-rose-500">EroMood</span>
+      <button onclick="switchPage(1)" class="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full text-sm font-medium">使い方</button>
+    </div>
+  </nav>
+
+  <!-- ヘッダー直下ナビバー -->
+  <div class="bg-zinc-900 py-3 border-b border-zinc-800">
+    <div class="max-w-6xl mx-auto px-6 flex gap-2 overflow-x-auto pb-1">
+      <button onclick="switchPage(0)" class="nav-btn active px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav0">診断</button>
+      <button onclick="switchPage(3)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav3">おすすめ</button>
+      <button onclick="switchPage(4)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav4">WebMループ</button>
+      <button onclick="switchPage(2)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav2">ランキング</button>
+      <button onclick="switchPage(5)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav5">名前検索</button>
+      <button onclick="switchPage(6)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav6">記事</button>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 py-8">
+
+    <!-- 診断ページ -->
+    <div id="page0">
+      <div class="flex justify-center gap-2 mb-10 bg-zinc-900 p-1 rounded-3xl max-w-md mx-auto">
+        <button onclick="switchTab(0)" class="tab active px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab0">検索診断</button>
+        <button onclick="switchTab(1)" class="tab px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab1">タグ診断</button>
+        <button onclick="switchTab(2)" class="tab px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab2">ランダム</button>
+      </div>
+
+      <div class="flex justify-center gap-3 mb-8 flex-wrap">
+        <button onclick="setSource('fanza')" class="source-btn active px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="fanzaBtn">FANZA</button>
+        <button onclick="setSource('mgs')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="mgsBtn">MGS</button>
+        <button onclick="setSource('duga')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="dugaBtn">DUGA</button>
+        <button onclick="setSource('sokmil')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="sokmilBtn">SOKMIL</button>
+      </div>
+
+      <div id="mode0" class="max-w-xl mx-auto">
+        <input id="quickInput" type="text" placeholder="例：清楚巨乳で短めがいい" class="w-full bg-zinc-900 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
+        <button onclick="quickDiagnose()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">今すぐ検索する</button>
+      </div>
+
+      <div id="mode1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-8">
+        <div class="mb-8">
+          <p class="font-medium mb-3">人種（複数OK）</p>
+          <div class="flex flex-wrap gap-3">
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="race" value="日本人"> 日本人</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="race" value="アジア系"> アジア系</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="race" value="白人"> 白人</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="race" value="黒人"> 黒人</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="race" value="ラテン"> ラテン</label>
+          </div>
+        </div>
+        <div>
+          <p class="font-medium mb-3">ジャンル（複数OK）</p>
+          <div class="flex flex-wrap gap-3">
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="清楚"> 清楚</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="巨乳"> 巨乳</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="素人"> 素人</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="コスプレ"> コスプレ</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="フェラ"> フェラ</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="騎乗位"> 騎乗位</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="熟女"> 熟女</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="美少女"> 美少女</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="VR"> VR</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="ギャル"> ギャル</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="制服"> 制服</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="Lesbian"> Lesbian</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="MILF"> MILF</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="Teen"> Teen</label>
+            <label class="chip flex items-center gap-2 bg-zinc-800 px-5 py-2 rounded-full"><input type="checkbox" class="genre" value="Anal"> Anal</label>
+          </div>
+        </div>
+        <button onclick="fullDiagnose()" class="mt-8 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">このタグで診断する</button>
+      </div>
+
+      <div id="mode2" class="hidden text-center">
+        <button onclick="randomPick()" class="w-full max-w-md mx-auto bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">ランダムでおすすめする！</button>
+      </div>
+
+      <div class="mt-12">
+        <h2 class="text-2xl font-medium mb-6">今すぐおすすめ</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
+      </div>
+
+      <div id="resultArea" class="hidden mt-12">
+        <h2 class="text-2xl font-medium mb-6">診断結果（5本）</h2>
+        <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+      </div>
+    </div>
+
+    <!-- 使い方ページ -->
+    <div id="page1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">EroMoodの使い方</h1>
+      <p class="text-lg leading-relaxed">EroMoodはAIがあなたの今の気分にぴったり合う日本のAVを秒で見つけてくれる無料診断サイトです。</p>
+      <p class="text-lg leading-relaxed mt-4">1. ソースを選択<br>2. 検索診断・タグ診断・ランダムから選ぶ<br>3. 気に入った作品は「保存」ボタンで後で見られます</p>
+    </div>
+
+    <!-- ランキングページ -->
+    <div id="page2" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">人気AVランキング</h1>
+      <div class="flex gap-2 mb-8 bg-zinc-800 p-1 rounded-3xl">
+        <button onclick="switchRankTab(0)" class="rank-tab active flex-1 py-3 rounded-3xl text-sm" id="rank0">今月</button>
+        <button onclick="switchRankTab(1)" class="rank-tab flex-1 py-3 rounded-3xl text-sm" id="rank1">今週</button>
+        <button onclick="switchRankTab(2)" class="rank-tab flex-1 py-3 rounded-3xl text-sm" id="rank2">今年</button>
+      </div>
+      <p class="text-lg leading-relaxed">2026年4月現在、FANZA・MGS・DUGA・SOKMILで特に人気の作品です。</p>
+    </div>
+
+    <!-- おすすめページ -->
+    <div id="page3" class="hidden max-w-6xl mx-auto">
+      <h2 class="text-2xl font-medium mb-6">今すぐおすすめ</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
+    </div>
+
+    <!-- WebMループページ -->
+    <div id="page4" class="hidden max-w-6xl mx-auto">
+      <h2 class="text-2xl font-medium mb-6">WebMループおすすめ</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="webmGrid"></div>
+    </div>
+
+    <!-- 名前検索ページ -->
+    <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
+      <input id="actressSearch" type="text" placeholder="女優名を入力" class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
+      <button onclick="searchActress()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
+      <div id="actressResults" class="mt-8"></div>
+    </div>
+
+    <!-- 記事一覧ページ -->
+    <div id="page6" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-8">記事一覧</h1>
+      <div class="space-y-6">
+        <div onclick="switchPage(7)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">今人気の女優ランキングTOP10</div>
+        <div onclick="switchPage(8)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">今月のおすすめ新作AV作品</div>
+        <div onclick="switchPage(9)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">話題の新人女優紹介2026</div>
+        <div onclick="switchPage(10)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">Xで今バズってるAV作品まとめ</div>
+        <div onclick="switchPage(11)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">騎乗位・正常位・バック…体位別おすすめ</div>
+        <div onclick="switchPage(12)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">清楚系AVが好きな人必見！2026年最新トレンド</div>
+        <div onclick="switchPage(13)" class="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl">巨乳・美乳好きのための厳選作品ガイド</div>
+      </div>
+    </div>
+
+    <!-- 記事1: 今人気の女優ランキングTOP10 -->
+    <div id="page7" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">今人気の女優ランキングTOP10</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        2026年4月現在、AV業界はますます活気づいています。FANZA、MGS、DUGA、SOKMILなどのプラットフォームで視聴者からの支持を集めている女優さんたちを、最新の検索数や作品評価、ユーザー傾向を基にしたランキング形式で紹介します。このランキングは総合的な人気を反映しており、どの女優も独自の魅力で多くのファンを魅了しています。自分好みのタイプを見つけて、楽しみ方の参考にしてください。<br><br>
+        1位：透明感抜群の清楚系美少女<br>
+        透明感のあるルックスと可愛らしさが最大の武器です。2026年もその人気は衰えず、清楚な雰囲気と自然な演技力がファンを引きつけています。幼げな顔立ちながら、甘い表情から激しいシーンまで幅広く対応する万能型。FANZAのランキングで常に上位を独占し、初心者から上級者まで幅広い層に支持されています。特に彼女の作品はストーリー性が高く、没入感が抜群です。<br><br>
+        2位：神話級の美貌を持つスタイル抜群女優<br>
+        完璧なプロポーションと洗練された大人の魅力が特徴です。優雅な雰囲気と大胆なプレイのギャップが魅力で、2026年のトレンドである高画質作品や情緒的なシーンで高評価を集めています。MGSやDUGAでも安定した人気を誇り、一度見たら忘れられない美しさです。<br><br>
+        3位：ベイビーフェイスでエネルギッシュな可愛い系女優<br>
+        可愛らしい顔立ちと積極的なプレイスタイルのギャップが人気の秘密です。ダイナミックな動きが作品を盛り上げ、若々しい活力がファンを魅了しています。騎乗位などのシーンで特に輝きを見せます。<br><br>
+        4位：感情表現豊かなグラマラス女優<br>
+        豊かなバストを活かしたプレイと、細やかな表情の変化が光ります。ストーリー性のある作品を好む人に特におすすめで、感情の機微がリアルに伝わる演技力が評価されています。<br><br>
+        5位：ボリューム巨乳の清楚系上昇株<br>
+        巨乳の存在感と清楚なルックスを兼ね備えた女優が急上昇中です。パイズリや密着プレイでのボリューム感が圧巻で、DUGAのフェチ系ファンにも支持されています。<br><br>
+        6位：スレンダーで柔軟性のある美人女優<br>
+        モデル級のスタイルとさまざまな体位をこなす柔軟性が魅力です。清楚さとセクシーさのバランスが絶妙で、SOKMILの配信作品でも高評価を集めています。<br><br>
+        7位：クールビューティーな高身長女優<br>
+        顔面偏差値の高さと洗練された雰囲気が際立つ存在です。クールな表情から見せる変化がファンを虜にし、2026年も安定した支持を得ています。<br><br>
+        8位：明るく積極的なギャル系女優<br>
+        元気で明るいキャラクターと積極的なプレイスタイルが支持されています。親しみやすさとパーティー感のある作品で人気です。<br><br>
+        9位：自然な魅力が光るロングセラー女優<br>
+        デビューから長く支持を集め、自然でリアルな演技が評価されています。幅広い作品に出演し続けています。<br><br>
+        10位：個性的で可愛らしい新進気鋭女優<br>
+        独特の魅力と親しみやすい雰囲気がファン層を拡大中です。ユニークな個性が光る作品が注目されています。<br><br>
+        このランキングは日々変動するものですが、現在のトレンドをしっかり反映しています。自分の好みに合った女優さんを見つけて、最新作品をチェックしてみてください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article7Grid"></div>
+    </div>
+
+    <!-- 記事2: 今月のおすすめ新作AV作品 -->
+    <div id="page8" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">今月のおすすめ新作AV作品</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        2026年4月、FANZAやMGS、DUGA、SOKMILで配信されている新作AV作品は、クオリティが高く多様なジャンルが揃っています。新人デビュー作や人気女優の最新タイトルが続々リリースされ、VR作品やストーリー重視のものが特に注目されています。今月のおすすめ傾向を厳選して紹介しますので、参考にしてください。<br><br>
+        透明感抜群美少女の濃厚4本番作品<br>
+        今月特に話題の透明感のある人気女優が出演する最新4本番作品です。アヘ顔や放心状態のリアルな表情が魅力で、ボリューム満点の内容がMGSでも高評価を受けています。初心者にも入りやすいエントリー作としておすすめです。<br><br>
+        奇跡の原石新人デビュー作<br>
+        今最も注目されている新人女優のデビュー作品です。初々しい表情と自然な反応が新鮮で、FANZAの新人ランキングで話題沸騰中。純粋さと可愛らしさがファンを魅了しています。<br><br>
+        美乳くびれボディのVR最新作<br>
+        スタイル抜群の女優が出演するVR作品です。密着感のあるプレイと臨場感が抜群で、SOKMILのダウンロードユーザーからも好評。ウエストのくびれを活かした美しいボディラインが楽しめます。<br><br>
+        清楚系人気女優の4月リリース作品<br>
+        大注目の清楚系女優の新作です。高画質で撮影された情緒的なシーンが特徴で、DUGAのストーリー系ファンにぴったりです。<br><br>
+        美貌のベテラン女優プレミアム作品<br>
+        神話級のルックスを持つベテラン女優の最新作です。洗練された演技と濃厚な絡みが魅力で、没入感の高い内容になっています。<br><br>
+        今月の新作は全体的に映像クオリティが高く、女性の表情や反応を丁寧に捉えた作品が増えています。FANZAの新着ランキングを毎日チェックするのもおすすめです。自分の好みに合った作品を選んで、ぜひ楽しんでください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article8Grid"></div>
+    </div>
+
+    <!-- 記事3: 話題の新人女優紹介2026 -->
+    <div id="page9" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">話題の新人女優紹介2026</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        2026年は新人女優の黄金期と言えるほど、フレッシュな才能が続々デビューしています。FANZAやMGSで話題の新人たちを、2026年4月現在のデビュー傾向を基に紹介します。グラビア出身者や透明感のある美少女が多く、清楚系や巨乳系が特に人気です。デビュー作の初々しさが魅力の新人たちをチェックしましょう。<br><br>
+        グラビア出身のスタイル抜群新人<br>
+        グラビアモデル出身のスタイル抜群新人です。透明感のある肌とプロポーションが魅力で、デビュー作では自然な演技が評価されています。2026年の新人ランキング上位常連です。<br><br>
+        可愛らしい顔立ちの積極派新人<br>
+        可愛らしい顔立ちと積極的なプレイスタイルが特徴の新人です。デビュー直後からFANZAで注目を集め、初心者ファンに支持されています。清楚なルックスとのギャップが話題です。<br><br>
+        黒髪清楚系の美少女新人<br>
+        黒髪清楚系の美少女新人です。初々しい表情と丁寧な演技が魅力で、MGSの配信作品で高評価。2026年のトレンドにぴったり合った存在です。<br><br>
+        奇跡の原石新人<br>
+        今最も注目されている原石のような新人です。自然な魅力と可愛さがファンから絶賛されています。<br><br>
+        スレンダー美少女と清楚系新人<br>
+        スレンダー系の新人と清楚な雰囲気の新人がSOKMILで人気急上昇中です。<br><br>
+        2026年の新人は全体的にクオリティが高く、DUGAのフェチ系作品にも積極的に出演しています。これからの活躍が楽しみな新人ばかりです。デビュー作から追いかけるのもAVの醍醐味です。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article9Grid"></div>
+    </div>
+
+    <!-- 記事4: Xで今バズってるAV作品まとめ -->
+    <div id="page10" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">Xで今バズってるAV作品まとめ</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        2026年4月、XではAV関連の投稿が活発で、新作クリップや女優の新着情報が次々とバズっています。FANZAやMGSの新作予告、記念シリーズ作品が特に話題です。バズりやすい作品の傾向と具体例をまとめますので、参考にしてください。<br><br>
+        人気記念シリーズの新作クリップ<br>
+        人気シリーズの新作クリップがXで大バズ。ダイナミックなシーンが数万いいねを獲得し、ファンから「最高」と絶賛されています。<br><br>
+        透明感抜群美少女の最新作抜粋<br>
+        透明感のある人気女優の最新作抜粋が拡散。表情の変化がリアルで、Xユーザーから「可愛すぎる」と話題沸騰中です。<br><br>
+        注目の新人デビュー関連<br>
+        今最も注目されている新人女優のデビュー作クリップがバズの中心。初々しい反応が「原石発見」とシェアされ、FANZAリンクが急上昇しています。<br><br>
+        清楚系人気女優の新着予告<br>
+        清楚系人気女優の新着予告が日常的にバズ。清楚系ファンからの反応が熱いです。<br><br>
+        Xでは短いクリップがバズりやすく、DUGAのフェチ作品やSOKMIL配信情報もよく共有されています。トレンドをリアルタイムで追いかけるのがおすすめです。バズっている作品をチェックして、自分に合うものを探してみてください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article10Grid"></div>
+    </div>
+
+    <!-- 記事5: 騎乗位・正常位・バック…体位別おすすめ -->
+    <div id="page11" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">騎乗位・正常位・バック…体位別おすすめ</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        AV作品の魅力の一つは体位による異なる興奮です。2026年4月現在、FANZAやMGSで人気の体位別おすすめ傾向を紹介します。騎乗位は女性主導のダイナミックさ、正常位は密着感、バックは視覚的な迫力が特徴。各体位で活躍する女優傾向と作品のポイントを解説します。<br><br>
+        騎乗位おすすめ<br>
+        騎乗位は積極的な腰振りが見どころです。エネルギッシュな可愛い系女優の作品が特に強く、高速ピストン系の新作が2026年トレンド。FANZA売れ筋で、ダイナミックな動きが楽しめます。<br><br>
+        正常位おすすめ<br>
+        正常位は顔と密着感が楽しめる定番です。神話級美貌を持つ女優の作品が最高で、感情表現豊かなシーンが没入感を高めます。DUGAのストーリー作品で評価が高く、優しいキスシーンが多いのが特徴です。<br><br>
+        バックおすすめ<br>
+        バックはヒップラインの美しさが際立つ体位です。巨乳清楚系の女優の作品が圧巻で、スレンダーな後ろ姿もセクシー。SOKMILユーザーから支持され、深く挿入する迫力が人気です。<br><br>
+        体位別で作品を選ぶと好みの興奮が得やすくなります。2026年の新作は各体位のクオリティが向上しており、VR作品でも体位の臨場感が増しています。自分の好みの体位から作品を探してみてください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article11Grid"></div>
+    </div>
+
+    <!-- 記事6: 清楚系AVが好きな人必見！2026年最新トレンド -->
+    <div id="page12" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">清楚系AVが好きな人必見！2026年最新トレンド</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        清楚系AVは2026年も根強い人気を誇っています。黒髪の透明感やおっとりした雰囲気と、プレイ中のギャップが魅力です。FANZAやMGSの清楚系作品トレンドを、2026年4月現在の最新情報で紹介します。清楚好き必見のポイントをまとめました。<br><br>
+        清楚×ドMギャップの流行<br>
+        2026年の清楚系トレンドは、清楚な見た目とのドMギャップが最大の特徴です。透明感のある美少女女優が激しいシーンを見せる作品が代表的で、多くのファンを虜にしています。<br><br>
+        黒髪おっとり美少女の増加<br>
+        黒髪清楚美少女が増加中です。自然な演技と控えめな表情が魅力で、DUGAのストーリー系作品で人気。初心者向けの優しいプレイから始まる作品が多いのが2026年の特徴です。<br><br>
+        VRや高画質での清楚系強化<br>
+        SOKMILの配信でも清楚系VR作品が増え、臨場感がアップ。全体的にストーリー重視で、感情移入しやすい作品が主流です。<br><br>
+        清楚系AVは心の癒しと興奮を両立させるジャンルです。2026年はさらにクオリティが高まっており、ファン層が拡大しています。清楚好きの方はぜひ最新トレンド作品をチェックしてください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article12Grid"></div>
+    </div>
+
+    <!-- 記事7: 巨乳・美乳好きのための厳選作品ガイド -->
+    <div id="page13" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <p class="text-xs text-zinc-500 mb-2">2026年4月2日更新</p>
+      <h1 class="text-3xl font-bold mb-4">巨乳・美乳好きのための厳選作品ガイド</h1>
+      <p class="text-sm text-rose-400 mb-6">※審査用サンプル記事です。本番では最新情報に更新します。</p>
+      <div class="prose text-lg leading-relaxed text-zinc-200">
+        巨乳や美乳好きにとって、2026年4月はボリューム満点の作品が豊富な時期です。FANZAやMGSで人気の巨乳・美乳女優傾向と作品のポイントを厳選して紹介します。揺れやパイズリなどの魅力ポイントを詳しく解説しますので、好みの作品探しの参考にしてください。<br><br>
+        ボリューム巨乳の神乳系作品<br>
+        Jカップ以上のボリュームと柔らかさが特徴の作品群です。パイズリや騎乗位での揺れが圧巻で、2026年の新作はフェチ要素も強化されています。DUGAファンにもおすすめです。<br><br>
+        感情表現豊かなグラマラス女優作品<br>
+        F～Gカップを活かした作品が多く、演技力とバストのバランスが抜群です。感情豊かなプレイの中でバストを活かしたシーンがMGSの高評価作品に目立ちます。<br><br>
+        清楚系巨乳と美乳の組み合わせ作品<br>
+        清楚な雰囲気と巨乳の組み合わせが人気です。バックや正常位でのボリューム感が楽しめ、SOKMILのダウンロード作品で長く堪能できます。<br><br>
+        巨乳トレンドのポイント<br>
+        2026年はぽよぽよ揺れやパイズリ重視の作品が増え、VRで臨場感アップ。ベテラン女優の新作も活躍中です。<br><br>
+        巨乳・美乳作品は視覚的な満足度が高く、ファンにとって特別なジャンルです。自分の好みのカップサイズやプレイスタイルから選んで、ぜひ堪能してください。
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8" id="article13Grid"></div>
+    </div>
+
+  </div>
+
+  <footer class="bg-zinc-950 py-8 text-center text-xs text-zinc-500 border-t border-zinc-800">
+    18歳未満禁止｜アフィリエイトリンクを使用｜責任は自己負担｜© 2026 EroMood
+  </footer>
+
+  <script>
+    let currentSource = "fanza";
+
+    function setSource(src) {
+      currentSource = src;
+      document.querySelectorAll('.source-btn').forEach(btn => btn.classList.remove('active'));
+      const btn = document.getElementById(src + 'Btn');
+      if (btn) btn.classList.add('active');
+      initRecommend();
+    }
+
+    function saveVideo(title) {
+      alert(title + " を保存しました");
+    }
+
+    const sampleVideosFANZA = [{title: "清楚系JAV 12分絶頂", duration: "12:34", source: "FANZA"},{title: "素人巨乳フェラ特化", duration: "08:45", source: "FANZA"},{title: "美少女VR体験", duration: "20:11", source: "FANZA"},{title: "騎乗位熟女", duration: "15:22", source: "FANZA"},{title: "ギャル制服", duration: "18:45", source: "FANZA"}];
+    const sampleVideosMGS = [{title: "プレステージ新作 騎乗位", duration: "15:22", source: "MGS"},{title: "MGS独占 美少女", duration: "20:11", source: "MGS"},{title: "MGS 清楚系", duration: "12:34", source: "MGS"},{title: "MGS 巨乳シリーズ", duration: "25:03", source: "MGS"},{title: "MGS 素人", duration: "14:55", source: "MGS"}];
+    const sampleVideosDUGA = [{title: "DUGA SOD新作", duration: "18:45", source: "DUGA"},{title: "DUGA 熟女シリーズ", duration: "25:03", source: "DUGA"},{title: "DUGA 美少女", duration: "12:34", source: "DUGA"},{title: "DUGA VR", duration: "20:11", source: "DUGA"},{title: "DUGA ギャル", duration: "15:22", source: "DUGA"}];
+    const sampleVideosSOKMIL = [{title: "SOKMIL 月額見放題", duration: "22:30", source: "SOKMIL"},{title: "SOKMIL 無修正以外", duration: "14:55", source: "SOKMIL"},{title: "SOKMIL 清楚", duration: "18:45", source: "SOKMIL"},{title: "SOKMIL 巨乳", duration: "12:34", source: "SOKMIL"},{title: "SOKMIL 熟女", duration: "20:11", source: "SOKMIL"}];
+
+    function createCard(v, isWebM = false) {
+      const media = isWebM ? `<video class="w-full h-full object-cover" autoplay loop muted playsinline><source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny_320x240_10s_1MB.mp4" type="video/mp4"></video>` : `<img src="https://picsum.photos/id/${Math.floor(Math.random()*100)+10}/640/360" class="w-full h-full object-cover" alt="">`;
+      return `<div class="card bg-zinc-900 rounded-3xl overflow-hidden"><div class="relative aspect-video">${media}</div><div class="p-4"><div class="text-rose-400 text-xs mb-1">${v.source}</div><h3 class="font-medium text-base leading-tight">${v.title}</h3><div class="flex gap-3 mt-4"><a href="#" target="_blank" class="flex-1 text-center bg-zinc-800 hover:bg-rose-600 py-3 rounded-2xl text-sm font-medium transition-colors">今すぐ見る</a><button onclick="saveVideo('${v.title}')" class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm font-medium">保存</button></div></div></div>`;
+    }
+
+    function initRecommend() {
+      const grid = document.getElementById('recommendGrid');
+      if (!grid) return;
+      let videos = [];
+      if (currentSource === "fanza") videos = sampleVideosFANZA;
+      else if (currentSource === "mgs") videos = sampleVideosMGS;
+      else if (currentSource === "duga") videos = sampleVideosDUGA;
+      else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+      grid.innerHTML = videos.map(v => createCard(v)).join('');
+    }
+
+    function initWebMGrid() {
+      const grid = document.getElementById('webmGrid');
+      if (!grid) return;
+      let videos = sampleVideosFANZA.concat(sampleVideosMGS, sampleVideosDUGA, sampleVideosSOKMIL);
+      grid.innerHTML = videos.map(v => createCard(v, true)).join('');
+    }
+
+    function initArticleGrid(gridId, videos) {
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
+      grid.innerHTML = videos.map(v => createCard(v)).join('');
+    }
+
+    function quickDiagnose() {
+      let videos = [];
+      if (currentSource === "fanza") videos = sampleVideosFANZA;
+      else if (currentSource === "mgs") videos = sampleVideosMGS;
+      else if (currentSource === "duga") videos = sampleVideosDUGA;
+      else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+      const shuffled = [...videos].sort(() => Math.random() - 0.5);
+      showResults(shuffled);
+    }
+
+    function fullDiagnose() {
+      let videos = [];
+      if (currentSource === "fanza") videos = sampleVideosFANZA;
+      else if (currentSource === "mgs") videos = sampleVideosMGS;
+      else if (currentSource === "duga") videos = sampleVideosDUGA;
+      else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+      const shuffled = [...videos].sort(() => Math.random() - 0.5);
+      showResults(shuffled);
+    }
+
+    function randomPick() {
+      let videos = [];
+      if (currentSource === "fanza") videos = sampleVideosFANZA;
+      else if (currentSource === "mgs") videos = sampleVideosMGS;
+      else if (currentSource === "duga") videos = sampleVideosDUGA;
+      else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+      const shuffled = [...videos].sort(() => Math.random() - 0.5);
+      showResults(shuffled);
+    }
+
+    function showResults(videos) {
+      const area = document.getElementById('resultArea');
+      const grid = document.getElementById('resultsGrid');
+      if (!grid) return;
+      grid.innerHTML = videos.map(v => createCard(v)).join('');
+      if (area) {
+        area.classList.remove('hidden');
+        area.scrollIntoView({behavior: "smooth"});
+      }
+    }
+
+    function switchTab(n) {
+      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
+      document.getElementById('mode0').classList.toggle('hidden', n !== 0);
+      document.getElementById('mode1').classList.toggle('hidden', n !== 1);
+      document.getElementById('mode2').classList.toggle('hidden', n !== 2);
+    }
+
+    function switchPage(n) {
+      document.querySelectorAll('#page0, #page1, #page2, #page3, #page4, #page5, #page6, #page7, #page8, #page9, #page10, #page11, #page12, #page13').forEach(p => p.classList.add('hidden'));
+      const target = document.getElementById('page' + n);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('nav' + n);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (n === 4) initWebMGrid();
+      if (n === 7) initArticleGrid('article7Grid', sampleVideosFANZA);
+      if (n === 8) initArticleGrid('article8Grid', sampleVideosMGS);
+      if (n === 9) initArticleGrid('article9Grid', sampleVideosDUGA);
+      if (n === 10) initArticleGrid('article10Grid', sampleVideosSOKMIL);
+      if (n === 11) initArticleGrid('article11Grid', sampleVideosFANZA);
+      if (n === 12) initArticleGrid('article12Grid', sampleVideosMGS);
+      if (n === 13) initArticleGrid('article13Grid', sampleVideosDUGA);
+    }
+
+    function switchRankTab(n) {
+      document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n));
+    }
+
+    // 起動
+    initRecommend();
+    switchTab(0);
+    switchPage(0);
+  </script>
+</body>
+</html>
