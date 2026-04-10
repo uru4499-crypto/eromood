@@ -1,4 +1,4 @@
-// js/script.js  v48 - 本物FANZAリンク3つ追加
+// js/script.js  v49 - 本物FANZAリンク4本復活
 let currentSource = "fanza";
 let savedVideos = [];
 
@@ -42,12 +42,7 @@ function renderMyList() {
 function renderEveryoneList() {
   const grid = document.getElementById('everyoneListTab');
   if (!grid) return;
-  const mock = [
-    {title: "清楚系人気の最新作", source: "FANZA", image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg", link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package"},
-    {title: "巨乳VR高評価作品", source: "MGS"},
-    {title: "騎乗位特化新作", source: "DUGA"},
-    {title: "素人系月額見放題", source: "SOKMIL"}
-  ];
+  const mock = [{title: "清楚系人気の最新作", source: "FANZA"}];
   grid.innerHTML = mock.map(v => createCard(v)).join('');
 }
 
@@ -57,31 +52,32 @@ function switchLaterTab(n) {
   document.querySelectorAll('.later-tab').forEach((t, i) => t.classList.toggle('active', i === n));
 }
 
-// 本物FANZAリンク3つ（v48で追加）
+// 本物FANZAリンク4本（v49）
 const sampleVideosFANZA = [
   {
     title: "清楚系OLの秘密",
-    duration: "??",
-    source: "FANZA",
+    image: "https://pics.dmm.co.jp/digital/video/bab00186/bab00186pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dbab00186&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
+  },
+  {
+    title: "清楚系OLの秘密",
     image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package"
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
   },
   {
     title: "爆乳美女の誘惑",
-    duration: "??",
-    source: "FANZA",
     image: "https://pics.dmm.co.jp/digital/video/ebwh00296/ebwh00296pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package"
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
   },
   {
     title: "人妻の欲情",
-    duration: "??",
-    source: "FANZA",
     image: "https://pics.dmm.co.jp/digital/video/meyd00654/meyd00654pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package"
-  },
-  {title: "素人巨乳フェラ特化", duration: "08:45", source: "FANZA"},
-  {title: "美少女VR体験", duration: "20:11", source: "FANZA"}
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
+  }
 ];
 
 const sampleVideosMGS = [{title: "プレステージ新作 騎乗位", duration: "15:22", source: "MGS"}];
@@ -119,61 +115,28 @@ function initRecommend() {
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// 以下は前回と同じ（quickDiagnose, fullDiagnose, randomPick, showResults, switchTab, switchPage, switchRankTab）
-function quickDiagnose() {
-  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
-  const shuffled = [...videos].sort(() => Math.random() - 0.5);
-  showResults(shuffled);
-}
-
-function fullDiagnose() {
-  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
-  const shuffled = [...videos].sort(() => Math.random() - 0.5);
-  showResults(shuffled);
-}
-
-function randomPick() {
-  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
-  const shuffled = [...videos].sort(() => Math.random() - 0.5);
-  showResults(shuffled);
-}
-
+// 以下は前回と同じ関数（quickDiagnose, fullDiagnose, randomPick, showResults, switchTab, switchPage, switchRankTab）
+function quickDiagnose() { /* 前回と同じ */ let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
+function fullDiagnose() { let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
+function randomPick() { let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
 function showResults(videos) {
   const area = document.getElementById('resultArea');
   const grid = document.getElementById('resultsGrid');
   if (!grid) return;
   grid.innerHTML = videos.map(v => createCard(v)).join('');
-  if (area) {
-    area.classList.remove('hidden');
-    area.scrollIntoView({behavior: "smooth"});
-  }
+  if (area) { area.classList.remove('hidden'); area.scrollIntoView({behavior: "smooth"}); }
 }
-
-function switchTab(n) {
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
-  document.getElementById('mode0').classList.toggle('hidden', n !== 0);
-  document.getElementById('mode1').classList.toggle('hidden', n !== 1);
-  document.getElementById('mode2').classList.toggle('hidden', n !== 2);
-}
-
+function switchTab(n) { document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n)); document.getElementById('mode0').classList.toggle('hidden', n !== 0); document.getElementById('mode1').classList.toggle('hidden', n !== 1); document.getElementById('mode2').classList.toggle('hidden', n !== 2); }
 function switchPage(n) {
   document.querySelectorAll('#page0,#page1,#page2,#page3,#page5,#page6,#page14').forEach(p => p.classList.add('hidden'));
   const target = document.getElementById('page' + n);
   if (target) target.classList.remove('hidden');
-
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const activeBtn = document.getElementById('nav' + n);
   if (activeBtn) activeBtn.classList.add('active');
-
-  if (n === 14) {
-    renderMyList();
-    renderEveryoneList();
-  }
+  if (n === 14) { renderMyList(); renderEveryoneList(); }
 }
-
-function switchRankTab(n) {
-  document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n));
-}
+function switchRankTab(n) { document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n)); }
 
 // 起動
 initRecommend();
