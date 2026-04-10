@@ -1,4 +1,4 @@
-// js/script.js  v49 - 本物FANZAリンク4本復活
+// js/script.js  v50 - 本物タイトル4本反映
 let currentSource = "fanza";
 let savedVideos = [];
 
@@ -52,28 +52,28 @@ function switchLaterTab(n) {
   document.querySelectorAll('.later-tab').forEach((t, i) => t.classList.toggle('active', i === n));
 }
 
-// 本物FANZAリンク4本（v49）
+// 本物タイトル4本（v50）
 const sampleVideosFANZA = [
   {
-    title: "清楚系OLの秘密",
+    title: "ブリブリガンギマリDJ媚薬ハブ酒オーバードーズキメセク SEASON21 胡桃さくら",
     image: "https://pics.dmm.co.jp/digital/video/bab00186/bab00186pl.jpg",
     link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dbab00186&af_id=eromood-004&ch=search_link&ch_id=package",
     source: "FANZA"
   },
   {
-    title: "清楚系OLの秘密",
+    title: "リアル乳袋Iカップ×デカ乳輪清楚系ビッチ美少女レイヤー19歳豪華2篇SP",
     image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg",
     link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package",
     source: "FANZA"
   },
   {
-    title: "爆乳美女の誘惑",
+    title: "極悪ジムトレーナーに媚薬プロテインを仕込まれ 力強マッスルピストンでドーピングアクメが止まらないぴちむち女子大生 桜野桃",
     image: "https://pics.dmm.co.jp/digital/video/ebwh00296/ebwh00296pl.jpg",
     link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package",
     source: "FANZA"
   },
   {
-    title: "人妻の欲情",
+    title: "義母奴●-特別編- 山口珠理",
     image: "https://pics.dmm.co.jp/digital/video/meyd00654/meyd00654pl.jpg",
     link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package",
     source: "FANZA"
@@ -95,7 +95,7 @@ function createCard(v) {
     </div>
     <div class="p-4">
       <div class="text-rose-400 text-xs mb-1">${v.source}</div>
-      <h3 class="font-medium text-base leading-tight">${v.title}</h3>
+      <h3 class="font-medium text-base leading-tight line-clamp-2">${v.title}</h3>
       <div class="flex gap-3 mt-4">
         <a href="${link}" target="_blank" class="flex-1 text-center bg-zinc-800 hover:bg-rose-600 py-3 rounded-2xl text-sm font-medium transition-colors">今すぐ見る</a>
         <button onclick="saveVideo('${v.title}')" class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm font-medium">保存</button>
@@ -115,18 +115,42 @@ function initRecommend() {
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// 以下は前回と同じ関数（quickDiagnose, fullDiagnose, randomPick, showResults, switchTab, switchPage, switchRankTab）
-function quickDiagnose() { /* 前回と同じ */ let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
-function fullDiagnose() { let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
-function randomPick() { let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL; const shuffled = [...videos].sort(() => Math.random() - 0.5); showResults(shuffled); }
+function quickDiagnose() {
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
+  const shuffled = [...videos].sort(() => Math.random() - 0.5);
+  showResults(shuffled);
+}
+
+function fullDiagnose() {
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
+  const shuffled = [...videos].sort(() => Math.random() - 0.5);
+  showResults(shuffled);
+}
+
+function randomPick() {
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
+  const shuffled = [...videos].sort(() => Math.random() - 0.5);
+  showResults(shuffled);
+}
+
 function showResults(videos) {
   const area = document.getElementById('resultArea');
   const grid = document.getElementById('resultsGrid');
   if (!grid) return;
   grid.innerHTML = videos.map(v => createCard(v)).join('');
-  if (area) { area.classList.remove('hidden'); area.scrollIntoView({behavior: "smooth"}); }
+  if (area) {
+    area.classList.remove('hidden');
+    area.scrollIntoView({behavior: "smooth"});
+  }
 }
-function switchTab(n) { document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n)); document.getElementById('mode0').classList.toggle('hidden', n !== 0); document.getElementById('mode1').classList.toggle('hidden', n !== 1); document.getElementById('mode2').classList.toggle('hidden', n !== 2); }
+
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === n));
+  document.getElementById('mode0').classList.toggle('hidden', n !== 0);
+  document.getElementById('mode1').classList.toggle('hidden', n !== 1);
+  document.getElementById('mode2').classList.toggle('hidden', n !== 2);
+}
+
 function switchPage(n) {
   document.querySelectorAll('#page0,#page1,#page2,#page3,#page5,#page6,#page14').forEach(p => p.classList.add('hidden'));
   const target = document.getElementById('page' + n);
@@ -134,9 +158,15 @@ function switchPage(n) {
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const activeBtn = document.getElementById('nav' + n);
   if (activeBtn) activeBtn.classList.add('active');
-  if (n === 14) { renderMyList(); renderEveryoneList(); }
+  if (n === 14) {
+    renderMyList();
+    renderEveryoneList();
+  }
 }
-function switchRankTab(n) { document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n)); }
+
+function switchRankTab(n) {
+  document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n));
+}
 
 // 起動
 initRecommend();
