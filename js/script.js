@@ -1,4 +1,4 @@
-// js/script.js
+// js/script.js  v48 - 本物FANZAリンク3つ追加
 let currentSource = "fanza";
 let savedVideos = [];
 
@@ -24,9 +24,7 @@ function saveVideo(title) {
   }
   const video = { title: title, source: currentSource || "FANZA" };
   savedVideos.push(video);
-  try {
-    localStorage.setItem('savedVideos', JSON.stringify(savedVideos));
-  } catch(e) {}
+  try { localStorage.setItem('savedVideos', JSON.stringify(savedVideos)); } catch(e) {}
   alert(title + " をマイリストに保存しました");
   if (document.getElementById('page14') && !document.getElementById('page14').classList.contains('hidden')) renderMyList();
 }
@@ -45,7 +43,7 @@ function renderEveryoneList() {
   const grid = document.getElementById('everyoneListTab');
   if (!grid) return;
   const mock = [
-    {title: "清楚系人気の最新作", source: "FANZA"},
+    {title: "清楚系人気の最新作", source: "FANZA", image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg", link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package"},
     {title: "巨乳VR高評価作品", source: "MGS"},
     {title: "騎乗位特化新作", source: "DUGA"},
     {title: "素人系月額見放題", source: "SOKMIL"}
@@ -59,12 +57,31 @@ function switchLaterTab(n) {
   document.querySelectorAll('.later-tab').forEach((t, i) => t.classList.toggle('active', i === n));
 }
 
+// 本物FANZAリンク3つ（v48で追加）
 const sampleVideosFANZA = [
-  {title: "清楚系JAV 12分絶頂", duration: "12:34", source: "FANZA", link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dbab00186&af_id=eromood-004&ch=search_link&ch_id=package"},
+  {
+    title: "清楚系OLの秘密",
+    duration: "??",
+    source: "FANZA",
+    image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package"
+  },
+  {
+    title: "爆乳美女の誘惑",
+    duration: "??",
+    source: "FANZA",
+    image: "https://pics.dmm.co.jp/digital/video/ebwh00296/ebwh00296pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package"
+  },
+  {
+    title: "人妻の欲情",
+    duration: "??",
+    source: "FANZA",
+    image: "https://pics.dmm.co.jp/digital/video/meyd00654/meyd00654pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package"
+  },
   {title: "素人巨乳フェラ特化", duration: "08:45", source: "FANZA"},
-  {title: "美少女VR体験", duration: "20:11", source: "FANZA"},
-  {title: "騎乗位熟女", duration: "15:22", source: "FANZA"},
-  {title: "ギャル制服", duration: "18:45", source: "FANZA"}
+  {title: "美少女VR体験", duration: "20:11", source: "FANZA"}
 ];
 
 const sampleVideosMGS = [{title: "プレステージ新作 騎乗位", duration: "15:22", source: "MGS"}];
@@ -73,11 +90,12 @@ const sampleVideosSOKMIL = [{title: "SOKMIL 月額見放題", duration: "22:30",
 
 function createCard(v) {
   const link = v.link || '#';
+  const image = v.image || "https://picsum.photos/id/1015/600/400";
   return `<div class="card bg-zinc-900 rounded-3xl overflow-hidden">
     <div class="relative aspect-video">
-      <video class="w-full h-full object-cover" autoplay loop muted playsinline>
-        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny_320x240_10s_1MB.mp4" type="video/mp4">
-      </video>
+      <a href="${link}" target="_blank">
+        <img src="${image}" class="w-full h-full object-cover" alt="${v.title}">
+      </a>
     </div>
     <div class="p-4">
       <div class="text-rose-400 text-xs mb-1">${v.source}</div>
@@ -101,32 +119,21 @@ function initRecommend() {
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
+// 以下は前回と同じ（quickDiagnose, fullDiagnose, randomPick, showResults, switchTab, switchPage, switchRankTab）
 function quickDiagnose() {
-  let videos = [];
-  if (currentSource === "fanza") videos = sampleVideosFANZA;
-  else if (currentSource === "mgs") videos = sampleVideosMGS;
-  else if (currentSource === "duga") videos = sampleVideosDUGA;
-  else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
   const shuffled = [...videos].sort(() => Math.random() - 0.5);
   showResults(shuffled);
 }
 
 function fullDiagnose() {
-  let videos = [];
-  if (currentSource === "fanza") videos = sampleVideosFANZA;
-  else if (currentSource === "mgs") videos = sampleVideosMGS;
-  else if (currentSource === "duga") videos = sampleVideosDUGA;
-  else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
   const shuffled = [...videos].sort(() => Math.random() - 0.5);
   showResults(shuffled);
 }
 
 function randomPick() {
-  let videos = [];
-  if (currentSource === "fanza") videos = sampleVideosFANZA;
-  else if (currentSource === "mgs") videos = sampleVideosMGS;
-  else if (currentSource === "duga") videos = sampleVideosDUGA;
-  else if (currentSource === "sokmil") videos = sampleVideosSOKMIL;
+  let videos = currentSource === "fanza" ? sampleVideosFANZA : currentSource === "mgs" ? sampleVideosMGS : currentSource === "duga" ? sampleVideosDUGA : sampleVideosSOKMIL;
   const shuffled = [...videos].sort(() => Math.random() - 0.5);
   showResults(shuffled);
 }
