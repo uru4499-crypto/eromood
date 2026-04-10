@@ -7,6 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 3px; }
+    .chip { transition: all 0.2s; }
+  </style>
 </head>
 <body class="min-h-screen pb-20">
 
@@ -52,7 +57,7 @@
         <button onclick="quickDiagnose()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">今すぐ検索する</button>
       </div>
 
-      <!-- ★★★ タグ診断ゾーン（縦3列・縦スクロール・65個全部） ★★★ -->
+      <!-- タグ診断ゾーン（縦3列・縦スクロール・65個全部） -->
       <div id="mode1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-8">
         <p class="font-medium mb-4">ジャンル（複数OK）</p>
         <div class="grid grid-cols-3 gap-3 max-h-[420px] overflow-y-auto pr-2 custom-scroll">
@@ -140,13 +145,54 @@
       </div>
     </div>
 
-    <!-- 他のページ（使い方・ランキング・名前検索・記事・後で見る）は前回と同じ -->
-    <div id="page1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">…（省略せず全部入っています）</div>
-    <div id="page2" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">…（省略せず全部入っています）</div>
-    <div id="page3" class="hidden max-w-6xl mx-auto">…（省略せず全部入っています）</div>
-    <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">…（省略せず全部入っています）</div>
-    <div id="page6" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">…（省略せず全部入っています）</div>
-    <div id="page14" class="hidden max-w-6xl mx-auto">…（省略せず全部入っています）</div>
+    <!-- 使い方ページ -->
+    <div id="page1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">EroMoodの使い方</h1>
+      <p class="text-lg leading-relaxed">EroMoodはAIがあなたの今の気分にぴったり合う日本のAVを秒で見つけてくれる無料診断サイトです。</p>
+      <p class="text-lg leading-relaxed mt-4">1. ソース（FANZA/MGS/DUGA/SOKMIL）を選択<br>2. 検索診断・タグ診断・ランダムから選ぶ<br>3. 気に入った作品は「保存」ボタンで後で見られます</p>
+    </div>
+
+    <!-- ランキングページ -->
+    <div id="page2" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">人気AVランキング</h1>
+      <div class="flex gap-2 mb-8 bg-zinc-800 p-1 rounded-3xl">
+        <button onclick="switchRankTab(0)" class="rank-tab active flex-1 py-3 rounded-3xl text-sm" id="rank0">今月</button>
+        <button onclick="switchRankTab(1)" class="rank-tab flex-1 py-3 rounded-3xl text-sm" id="rank1">今週</button>
+        <button onclick="switchRankTab(2)" class="rank-tab flex-1 py-3 rounded-3xl text-sm" id="rank2">今年</button>
+      </div>
+      <p class="text-lg leading-relaxed">2026年4月現在、FANZA・MGS・DUGA・SOKMILで特に人気の作品です。</p>
+    </div>
+
+    <!-- おすすめページ -->
+    <div id="page3" class="hidden max-w-6xl mx-auto">
+      <h2 class="text-2xl font-medium mb-6">今すぐおすすめ</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
+    </div>
+
+    <!-- 名前検索ページ -->
+    <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
+      <input id="actressSearch" type="text" placeholder="女優名を入力" class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
+      <button onclick="searchActress()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
+      <div id="actressResults" class="mt-8"></div>
+    </div>
+
+    <!-- 記事一覧ページ -->
+    <div id="page6" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-8">記事一覧</h1>
+      <p class="text-zinc-400 text-center py-12">現在準備中です。<br>後日、充実した記事を追加します。</p>
+    </div>
+
+    <!-- 後で見るページ -->
+    <div id="page14" class="hidden max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold mb-6">後で見る</h2>
+      <div class="flex justify-center gap-2 mb-8 bg-zinc-900 p-1 rounded-3xl max-w-md mx-auto">
+        <button onclick="switchLaterTab(0)" class="later-tab active px-8 py-4 rounded-3xl text-base font-medium flex-1" id="laterTab0">マイリスト</button>
+        <button onclick="switchLaterTab(1)" class="later-tab px-8 py-4 rounded-3xl text-base font-medium flex-1" id="laterTab1">みんなの後で見る</button>
+      </div>
+      <div id="myListTab" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+      <div id="everyoneListTab" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
 
   </div>
 
