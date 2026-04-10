@@ -1,0 +1,12 @@
+/* css/style.css */
+body { font-family: 'Noto Sans JP', sans-serif; background: #111111; color: #f1f1f1; }
+.card { transition: all 0.25s ease; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 15px -3px rgb(0 0 0 / 0.3); }
+.tab { transition: all 0.2s; }
+.tab.active { background-color: #e11d48; color: white; }
+.source-btn { transition: all 0.2s; }
+.source-btn.active { background-color: #e11d48; color: white; }
+.nav-btn { transition: all 0.2s; }
+.nav-btn.active { background-color: #e11d48; color: white; }
+.later-tab { transition: all 0.2s; }
+.later-tab.active { background-color: #e11d48; color: white; }
