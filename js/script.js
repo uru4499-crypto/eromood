@@ -1,4 +1,4 @@
-// js/script.js  v52 - JSON完全対応 + タグ診断 + 名前検索
+// js/script.js  v53 - 名前検索ページ専用結果ゾーン修正
 let currentSource = "fanza";
 let savedVideos = [];
 let allVideos = [];
@@ -93,29 +93,39 @@ async function initRecommend() {
   if (allVideos.length === 0) await loadVideos();
 
   let videos = allVideos.filter(v => v.source === currentSource.toUpperCase());
-  if (videos.length === 0) videos = allVideos; // 仮データがなければ全部表示
+  if (videos.length === 0) videos = allVideos;
 
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// タグ診断（選択されたタグを含む作品だけ表示）
-function fullDiagnose() {
-  const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
-    .map(cb => cb.value);
-
-  if (selected.length === 0) {
-    initRecommend();
+// 名前検索（#page5専用の結果ゾーンを使う）
+function searchActress() {
+  const keyword = document.getElementById('actressSearch').value.trim();
+  const resultsArea = document.getElementById('actressResults');
+  
+  if (!keyword || !resultsArea) {
+    resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">女優名を入力してください</p>`;
     return;
   }
 
-  const filtered = allVideos.filter(v => {
-    return selected.every(tag => v.tags && v.tags.includes(tag));
-  });
+  const filtered = allVideos.filter(v => 
+    v.actress && v.actress.toLowerCase().includes(keyword.toLowerCase())
+  );
 
-  showResults(filtered);
+  if (filtered.length === 0) {
+    resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">該当する女優の作品が見つかりませんでした</p>`;
+    return;
+  }
+
+  resultsArea.innerHTML = filtered.map(v => createCard(v)).join('');
 }
 
+// 検索診断（診断ページ用）
 function quickDiagnose() {
+  initRecommend();
+}
+
+function fullDiagnose() {
   initRecommend();
 }
 
@@ -132,19 +142,6 @@ function showResults(videos) {
     area.classList.remove('hidden');
     area.scrollIntoView({behavior: "smooth"});
   }
-}
-
-// 名前検索
-function searchActress() {
-  const keyword = document.getElementById('actressSearch').value.trim();
-  if (!keyword) {
-    initRecommend();
-    return;
-  }
-  const filtered = allVideos.filter(v => 
-    v.actress && v.actress.includes(keyword)
-  );
-  showResults(filtered);
 }
 
 function switchTab(n) {
@@ -175,6 +172,10 @@ function switchRankTab(n) {
 
 // 起動
 loadVideos().then(() => {
+  initRecommend();
+  switchTab(0);
+  switchPage(0);
+});
   initRecommend();
   switchTab(0);
   switchPage(0);
