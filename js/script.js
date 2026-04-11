@@ -1,17 +1,17 @@
-// js/script.js  v51 - JSON読み込み版（data/videos.json対応）
+// js/script.js  v52 - JSON完全対応 + タグ診断 + 名前検索
 let currentSource = "fanza";
 let savedVideos = [];
-let allVideos = [];   // JSONから読み込んだ全作品
+let allVideos = [];
 
-// localStorage（後で見る）
+// localStorage
 try {
   const saved = localStorage.getItem('savedVideos');
   if (saved) savedVideos = JSON.parse(saved);
 } catch(e) {
-  console.warn("localStorage is blocked");
+  console.warn("localStorage blocked");
 }
 
-// JSONを読み込む
+// JSON読み込み
 async function loadVideos() {
   try {
     const res = await fetch('/data/videos.json');
@@ -78,6 +78,7 @@ function createCard(v) {
     <div class="p-4">
       <div class="text-rose-400 text-xs mb-1">${v.source}</div>
       <h3 class="font-medium text-base leading-tight line-clamp-2">${v.title}</h3>
+      <div class="text-zinc-400 text-xs mt-1">${v.actress || ''}</div>
       <div class="flex gap-3 mt-4">
         <a href="${link}" target="_blank" class="flex-1 text-center bg-zinc-800 hover:bg-rose-600 py-3 rounded-2xl text-sm font-medium transition-colors">今すぐ見る</a>
         <button onclick="saveVideo('${v.title}')" class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm font-medium">保存</button>
@@ -89,28 +90,38 @@ function createCard(v) {
 async function initRecommend() {
   const grid = document.getElementById('recommendGrid');
   if (!grid) return;
-
-  // 初回のみJSON読み込み
   if (allVideos.length === 0) await loadVideos();
 
-  // 現在のソースでフィルタ
   let videos = allVideos.filter(v => v.source === currentSource.toUpperCase());
-
-  // 他のソースはまだ仮データ（将来的にJSONに追加すれば自動で増える）
-  if (videos.length === 0) {
-    if (currentSource === "mgs") videos = [{title: "プレステージ新作 騎乗位", source: "MGS"}];
-    else if (currentSource === "duga") videos = [{title: "DUGA SOD新作", source: "DUGA"}];
-    else if (currentSource === "sokmil") videos = [{title: "SOKMIL 月額見放題", source: "SOKMIL"}];
-  }
+  if (videos.length === 0) videos = allVideos; // 仮データがなければ全部表示
 
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-function quickDiagnose() { /* 省略せず同じ */ 
-  initRecommend(); // 簡易的に今のおすすめを表示
+// タグ診断（選択されたタグを含む作品だけ表示）
+function fullDiagnose() {
+  const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+
+  if (selected.length === 0) {
+    initRecommend();
+    return;
+  }
+
+  const filtered = allVideos.filter(v => {
+    return selected.every(tag => v.tags && v.tags.includes(tag));
+  });
+
+  showResults(filtered);
 }
-function fullDiagnose() { initRecommend(); }
-function randomPick() { initRecommend(); }
+
+function quickDiagnose() {
+  initRecommend();
+}
+
+function randomPick() {
+  initRecommend();
+}
 
 function showResults(videos) {
   const area = document.getElementById('resultArea');
@@ -121,6 +132,19 @@ function showResults(videos) {
     area.classList.remove('hidden');
     area.scrollIntoView({behavior: "smooth"});
   }
+}
+
+// 名前検索
+function searchActress() {
+  const keyword = document.getElementById('actressSearch').value.trim();
+  if (!keyword) {
+    initRecommend();
+    return;
+  }
+  const filtered = allVideos.filter(v => 
+    v.actress && v.actress.includes(keyword)
+  );
+  showResults(filtered);
 }
 
 function switchTab(n) {
