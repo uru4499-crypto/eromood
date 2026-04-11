@@ -1,4 +1,4 @@
-// js/script.js  v54 - 安全復活版（JSON一時停止・作品4本ハードコード）
+// js/script.js  v55 - 診断ページ完全復活版
 let currentSource = "fanza";
 let savedVideos = [];
 
@@ -10,7 +10,7 @@ try {
   console.warn("localStorage blocked");
 }
 
-// 作品データ（安全にハードコード）
+// 作品データ（4本）
 const allVideos = [
   {
     title: "ブリブリガンギマリDJ媚薬ハブ酒オーバードーズキメセク SEASON21 胡桃さくら",
@@ -111,7 +111,40 @@ function initRecommend() {
   grid.innerHTML = allVideos.map(v => createCard(v)).join('');
 }
 
-// 名前検索（#page5専用）
+// 検索診断・タグ診断・ランダム（すべて診断結果エリアに表示）
+function quickDiagnose() {
+  showResults(allVideos);
+}
+
+function fullDiagnose() {
+  const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+  if (selected.length === 0) {
+    showResults(allVideos);
+    return;
+  }
+  const filtered = allVideos.filter(v => 
+    v.tags && selected.every(tag => v.tags.includes(tag))
+  );
+  showResults(filtered);
+}
+
+function randomPick() {
+  const shuffled = [...allVideos].sort(() => Math.random() - 0.5);
+  showResults(shuffled);
+}
+
+function showResults(videos) {
+  const area = document.getElementById('resultArea');
+  const grid = document.getElementById('resultsGrid');
+  if (!grid) return;
+  grid.innerHTML = videos.map(v => createCard(v)).join('');
+  if (area) {
+    area.classList.remove('hidden');
+    area.scrollIntoView({behavior: "smooth"});
+  }
+}
+
 function searchActress() {
   const keyword = document.getElementById('actressSearch').value.trim();
   const resultsArea = document.getElementById('actressResults');
@@ -132,22 +165,6 @@ function searchActress() {
   }
 
   resultsArea.innerHTML = filtered.map(v => createCard(v)).join('');
-}
-
-// 検索診断
-function quickDiagnose() { initRecommend(); }
-function fullDiagnose() { initRecommend(); }
-function randomPick() { initRecommend(); }
-
-function showResults(videos) {
-  const area = document.getElementById('resultArea');
-  const grid = document.getElementById('resultsGrid');
-  if (!grid) return;
-  grid.innerHTML = videos.map(v => createCard(v)).join('');
-  if (area) {
-    area.classList.remove('hidden');
-    area.scrollIntoView({behavior: "smooth"});
-  }
 }
 
 function switchTab(n) {
