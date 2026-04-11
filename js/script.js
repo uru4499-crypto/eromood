@@ -1,6 +1,7 @@
-// js/script.js  v55 - 診断ページ完全復活版
+// js/script.js  v56 - 診断ページ完全修正版（検索診断・タグ診断・ランダム全部動作）
 let currentSource = "fanza";
 let savedVideos = [];
+let allVideos = [];
 
 // localStorage
 try {
@@ -10,37 +11,17 @@ try {
   console.warn("localStorage blocked");
 }
 
-// 作品データ（4本）
-const allVideos = [
-  {
-    title: "ブリブリガンギマリDJ媚薬ハブ酒オーバードーズキメセク SEASON21 胡桃さくら",
-    actress: "胡桃さくら",
-    image: "https://pics.dmm.co.jp/digital/video/bab00186/bab00186pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dbab00186&af_id=eromood-004&ch=search_link&ch_id=package",
-    source: "FANZA"
-  },
-  {
-    title: "リアル乳袋Iカップ×デカ乳輪清楚系ビッチ美少女レイヤー19歳豪華2篇SP",
-    actress: "愛瀬ゆう",
-    image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package",
-    source: "FANZA"
-  },
-  {
-    title: "極悪ジムトレーナーに媚薬プロテインを仕込まれ 力強マッスルピストンでドーピングアクメが止まらないぴちむち女子大生 桜野桃",
-    actress: "桜野桃",
-    image: "https://pics.dmm.co.jp/digital/video/ebwh00296/ebwh00296pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package",
-    source: "FANZA"
-  },
-  {
-    title: "義母奴●-特別編- 山口珠理",
-    actress: "山口珠理",
-    image: "https://pics.dmm.co.jp/digital/video/meyd00654/meyd00654pl.jpg",
-    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package",
-    source: "FANZA"
+// JSON読み込み
+async function loadVideos() {
+  try {
+    const res = await fetch('/data/videos.json');
+    allVideos = await res.json();
+    console.log(`✅ ${allVideos.length}本の作品を読み込みました`);
+  } catch(e) {
+    console.error("JSON読み込み失敗", e);
+    allVideos = [];
   }
-];
+}
 
 function setSource(src) {
   currentSource = src;
@@ -105,27 +86,44 @@ function createCard(v) {
   </div>`;
 }
 
-function initRecommend() {
+async function initRecommend() {
   const grid = document.getElementById('recommendGrid');
   if (!grid) return;
-  grid.innerHTML = allVideos.map(v => createCard(v)).join('');
+  if (allVideos.length === 0) await loadVideos();
+
+  let videos = allVideos.filter(v => v.source === currentSource.toUpperCase());
+  if (videos.length === 0) videos = allVideos;
+
+  grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// 検索診断・タグ診断・ランダム（すべて診断結果エリアに表示）
+// 検索診断（タイトル or 女優名で検索）
 function quickDiagnose() {
-  showResults(allVideos);
-}
-
-function fullDiagnose() {
-  const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
-    .map(cb => cb.value);
-  if (selected.length === 0) {
-    showResults(allVideos);
+  const keyword = document.getElementById('quickInput').value.trim();
+  if (!keyword) {
+    initRecommend();
     return;
   }
   const filtered = allVideos.filter(v => 
-    v.tags && selected.every(tag => v.tags.includes(tag))
+    (v.title && v.title.includes(keyword)) || (v.actress && v.actress.includes(keyword))
   );
+  showResults(filtered);
+}
+
+// タグ診断（選択したタグをすべて含む作品だけ）
+function fullDiagnose() {
+  const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+
+  if (selected.length === 0) {
+    initRecommend();
+    return;
+  }
+
+  const filtered = allVideos.filter(v => {
+    return v.tags && selected.every(tag => v.tags.includes(tag));
+  });
+
   showResults(filtered);
 }
 
@@ -194,6 +192,10 @@ function switchRankTab(n) {
 }
 
 // 起動
-initRecommend();
+loadVideos().then(() => {
+  initRecommend();
+  switchTab(0);
+  switchPage(0);
+});
 switchTab(0);
 switchPage(0);
