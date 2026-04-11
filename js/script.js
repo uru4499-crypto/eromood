@@ -1,7 +1,6 @@
-// js/script.js  v53 - 名前検索ページ専用結果ゾーン修正
+// js/script.js  v54 - 安全復活版（JSON一時停止・作品4本ハードコード）
 let currentSource = "fanza";
 let savedVideos = [];
-let allVideos = [];
 
 // localStorage
 try {
@@ -11,17 +10,37 @@ try {
   console.warn("localStorage blocked");
 }
 
-// JSON読み込み
-async function loadVideos() {
-  try {
-    const res = await fetch('/data/videos.json');
-    allVideos = await res.json();
-    console.log(`✅ ${allVideos.length}本の作品を読み込みました`);
-  } catch(e) {
-    console.error("JSON読み込み失敗", e);
-    allVideos = [];
+// 作品データ（安全にハードコード）
+const allVideos = [
+  {
+    title: "ブリブリガンギマリDJ媚薬ハブ酒オーバードーズキメセク SEASON21 胡桃さくら",
+    actress: "胡桃さくら",
+    image: "https://pics.dmm.co.jp/digital/video/bab00186/bab00186pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dbab00186&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
+  },
+  {
+    title: "リアル乳袋Iカップ×デカ乳輪清楚系ビッチ美少女レイヤー19歳豪華2篇SP",
+    actress: "愛瀬ゆう",
+    image: "https://pics.dmm.co.jp/digital/video/scdc00010/scdc00010pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dscdc00010&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
+  },
+  {
+    title: "極悪ジムトレーナーに媚薬プロテインを仕込まれ 力強マッスルピストンでドーピングアクメが止まらないぴちむち女子大生 桜野桃",
+    actress: "桜野桃",
+    image: "https://pics.dmm.co.jp/digital/video/ebwh00296/ebwh00296pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Debwh00296&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
+  },
+  {
+    title: "義母奴●-特別編- 山口珠理",
+    actress: "山口珠理",
+    image: "https://pics.dmm.co.jp/digital/video/meyd00654/meyd00654pl.jpg",
+    link: "https://al.fanza.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Fav%2Fcontent%2F%3Fid%3Dmeyd00654&af_id=eromood-004&ch=search_link&ch_id=package",
+    source: "FANZA"
   }
-}
+];
 
 function setSource(src) {
   currentSource = src;
@@ -56,8 +75,7 @@ function renderMyList() {
 function renderEveryoneList() {
   const grid = document.getElementById('everyoneListTab');
   if (!grid) return;
-  const mock = [{title: "清楚系人気の最新作", source: "FANZA"}];
-  grid.innerHTML = mock.map(v => createCard(v)).join('');
+  grid.innerHTML = allVideos.map(v => createCard(v)).join('');
 }
 
 function switchLaterTab(n) {
@@ -87,23 +105,19 @@ function createCard(v) {
   </div>`;
 }
 
-async function initRecommend() {
+function initRecommend() {
   const grid = document.getElementById('recommendGrid');
   if (!grid) return;
-  if (allVideos.length === 0) await loadVideos();
-
-  let videos = allVideos.filter(v => v.source === currentSource.toUpperCase());
-  if (videos.length === 0) videos = allVideos;
-
-  grid.innerHTML = videos.map(v => createCard(v)).join('');
+  grid.innerHTML = allVideos.map(v => createCard(v)).join('');
 }
 
-// 名前検索（#page5専用の結果ゾーンを使う）
+// 名前検索（#page5専用）
 function searchActress() {
   const keyword = document.getElementById('actressSearch').value.trim();
   const resultsArea = document.getElementById('actressResults');
-  
-  if (!keyword || !resultsArea) {
+  if (!resultsArea) return;
+
+  if (!keyword) {
     resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">女優名を入力してください</p>`;
     return;
   }
@@ -113,25 +127,17 @@ function searchActress() {
   );
 
   if (filtered.length === 0) {
-    resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">該当する女優の作品が見つかりませんでした</p>`;
+    resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">該当する作品が見つかりませんでした</p>`;
     return;
   }
 
   resultsArea.innerHTML = filtered.map(v => createCard(v)).join('');
 }
 
-// 検索診断（診断ページ用）
-function quickDiagnose() {
-  initRecommend();
-}
-
-function fullDiagnose() {
-  initRecommend();
-}
-
-function randomPick() {
-  initRecommend();
-}
+// 検索診断
+function quickDiagnose() { initRecommend(); }
+function fullDiagnose() { initRecommend(); }
+function randomPick() { initRecommend(); }
 
 function showResults(videos) {
   const area = document.getElementById('resultArea');
@@ -171,12 +177,6 @@ function switchRankTab(n) {
 }
 
 // 起動
-loadVideos().then(() => {
-  initRecommend();
-  switchTab(0);
-  switchPage(0);
-});
-  initRecommend();
-  switchTab(0);
-  switchPage(0);
-});
+initRecommend();
+switchTab(0);
+switchPage(0);
