@@ -57,7 +57,7 @@
         <button onclick="quickDiagnose()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">今すぐ検索する</button>
       </div>
 
-      <!-- タグ診断ゾーン（縦3列・縦スクロール・65個全部） -->
+      <!-- タグ診断ゾーン（縦3列・縦スクロール） -->
       <div id="mode1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-8">
         <p class="font-medium mb-4">ジャンル（複数OK）</p>
         <div class="grid grid-cols-3 gap-3 max-h-[420px] overflow-y-auto pr-2 custom-scroll">
@@ -149,7 +149,7 @@
     <div id="page1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
       <h1 class="text-3xl font-bold mb-6">EroMoodの使い方</h1>
       <p class="text-lg leading-relaxed">EroMoodはAIがあなたの今の気分にぴったり合う日本のAVを秒で見つけてくれる無料診断サイトです。</p>
-      <p class="text-lg leading-relaxed mt-4">1. ソース（FANZA/MGS/DUGA/SOKMIL）を選択<br>2. 検索診断・タグ診断・ランダムから選ぶ<br>3. 気に入った作品は「保存」ボタンで後で見られます</p>
+      <p class="text-lg leading-relaxed mt-4">1. ソースを選択<br>2. 検索診断・タグ診断・ランダムから選ぶ<br>3. 気に入った作品は「保存」ボタンで後で見られます</p>
     </div>
 
     <!-- ランキングページ -->
@@ -169,12 +169,14 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
     </div>
 
-    <!-- 名前検索ページ -->
+    <!-- ★★★ 名前検索ページ（完全版） ★★★ -->
     <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
       <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
-      <input id="actressSearch" type="text" placeholder="女優名を入力" class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
-      <button onclick="searchActress()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
-      <div id="actressResults" class="mt-8"></div>
+      <input id="actressSearch" type="text" placeholder="女優名を入力（例：胡桃さくら、山口珠理）" 
+             class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
+      <button onclick="searchActress()" 
+              class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
+      <div id="actressResults" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 
     <!-- 記事一覧ページ -->
