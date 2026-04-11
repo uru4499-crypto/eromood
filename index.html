@@ -10,7 +10,6 @@
   <style>
     .custom-scroll::-webkit-scrollbar { width: 6px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 3px; }
-    .chip { transition: all 0.2s; }
   </style>
 </head>
 <body class="min-h-screen pb-20">
@@ -57,7 +56,6 @@
         <button onclick="quickDiagnose()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">今すぐ検索する</button>
       </div>
 
-      <!-- タグ診断ゾーン（縦3列・縦スクロール・65個全部） -->
       <div id="mode1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-8">
         <p class="font-medium mb-4">ジャンル（複数OK）</p>
         <div class="grid grid-cols-3 gap-3 max-h-[420px] overflow-y-auto pr-2 custom-scroll">
@@ -145,6 +143,16 @@
       </div>
     </div>
 
+    <!-- 名前検索ページ（独立した結果ゾーン） -->
+    <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+      <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
+      <input id="actressSearch" type="text" placeholder="女優名を入力" 
+             class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
+      <button onclick="searchActress()" 
+              class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
+      <div id="actressResults" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+    </div>
+
     <!-- 使い方ページ -->
     <div id="page1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
       <h1 class="text-3xl font-bold mb-6">EroMoodの使い方</h1>
@@ -167,16 +175,6 @@
     <div id="page3" class="hidden max-w-6xl mx-auto">
       <h2 class="text-2xl font-medium mb-6">今すぐおすすめ</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
-    </div>
-
-    <!-- 名前検索ページ（修正済み） -->
-    <div id="page5" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
-      <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
-      <input id="actressSearch" type="text" placeholder="女優名を入力" 
-             class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
-      <button onclick="searchActress()" 
-              class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
-      <div id="actressResults" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 
     <!-- 記事一覧ページ -->
