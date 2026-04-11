@@ -1,4 +1,4 @@
-// js/script.js  v56 - 診断ページ完全修正版（検索診断・タグ診断・ランダム全部動作）
+// js/script.js  v56 - 検索診断 精度大幅向上版
 let currentSource = "fanza";
 let savedVideos = [];
 let allVideos = [];
@@ -97,20 +97,29 @@ async function initRecommend() {
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// 検索診断（タイトル or 女優名で検索）
+// 検索診断 - 精度大幅向上（タイトル + 女優名 + タグの3つを検索）
 function quickDiagnose() {
   const keyword = document.getElementById('quickInput').value.trim();
   if (!keyword) {
     initRecommend();
     return;
   }
-  const filtered = allVideos.filter(v => 
-    (v.title && v.title.includes(keyword)) || (v.actress && v.actress.includes(keyword))
-  );
+
+  const lowerKeyword = keyword.toLowerCase();
+
+  const filtered = allVideos.filter(v => {
+    // タイトル検索
+    if (v.title && v.title.toLowerCase().includes(lowerKeyword)) return true;
+    // 女優名検索
+    if (v.actress && v.actress.toLowerCase().includes(lowerKeyword)) return true;
+    // タグ検索（配列の中から1つでも一致したらOK）
+    if (v.tags && v.tags.some(tag => tag.toLowerCase().includes(lowerKeyword))) return true;
+    return false;
+  });
+
   showResults(filtered);
 }
 
-// タグ診断（選択したタグをすべて含む作品だけ）
 function fullDiagnose() {
   const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
     .map(cb => cb.value);
@@ -197,5 +206,3 @@ loadVideos().then(() => {
   switchTab(0);
   switchPage(0);
 });
-switchTab(0);
-switchPage(0);
