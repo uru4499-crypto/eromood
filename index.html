@@ -143,20 +143,22 @@
       </div>
     </div>
 
-    <!-- 名前検索ページ（検索窓とボタンを小さく戻し、結果は大きいまま） -->
+    <!-- 名前検索ページ（タイトル右に検索窓＋ボタン） -->
     <div id="page5" class="hidden max-w-6xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6">女優名で検索</h1>
-      
-      <!-- 検索窓とボタンを小さく（前々回と同じサイズ） -->
-      <div class="flex gap-3 max-w-md">
-        <input id="actressSearch" type="text" placeholder="女優名を入力" 
-               class="flex-1 bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-4 text-base outline-none">
-        <button onclick="searchActress()" 
-                class="px-10 bg-rose-600 hover:bg-rose-500 rounded-3xl text-base font-medium">検索</button>
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">女優名で検索</h1>
+        
+        <!-- 検索窓とボタンをタイトル右に横並びで配置 -->
+        <div class="flex gap-3 max-w-md">
+          <input id="actressSearch" type="text" placeholder="女優名を入力" 
+                 class="flex-1 bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-4 text-base outline-none">
+          <button onclick="searchActress()" 
+                  class="px-10 bg-rose-600 hover:bg-rose-500 rounded-3xl text-base font-medium whitespace-nowrap">検索</button>
+        </div>
       </div>
 
-      <!-- 結果ゾーンは診断ページと同じ大きいサイズのまま -->
-      <div id="actressResults" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+      <!-- 結果ゾーン（診断ページと同じ大きいサイズのまま） -->
+      <div id="actressResults" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
     </div>
 
     <!-- 使い方ページ -->
