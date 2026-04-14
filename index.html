@@ -13,7 +13,6 @@
   </style>
 </head>
 <body class="min-h-screen pb-20">
-
   <!-- ヘッダー -->
   <nav class="bg-zinc-950 py-4 border-b border-zinc-800">
     <div class="max-w-6xl mx-auto px-6 flex items-center justify-between">
@@ -25,7 +24,8 @@
   <!-- ヘッダー直下ナビバー -->
   <div class="bg-zinc-900 py-3 border-b border-zinc-800">
     <div class="max-w-6xl mx-auto px-6 flex gap-2 overflow-x-auto pb-1">
-      <button onclick="switchPage(0)" class="nav-btn active px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav0">診断</button>
+      <button onclick="switchPage(0)" class="nav-btn active px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav0">バズ作品</button>
+      <button onclick="switchPage(1)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav1">診断</button>
       <button onclick="switchPage(3)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav3">おすすめ</button>
       <button onclick="switchPage(2)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav2">ランキング</button>
       <button onclick="switchPage(5)" class="nav-btn px-6 py-3 rounded-3xl text-sm font-medium whitespace-nowrap" id="nav5">名前検索</button>
@@ -36,26 +36,34 @@
 
   <div class="max-w-6xl mx-auto px-6 py-8">
 
-    <!-- 診断ページ -->
+    <!-- ====================== トップページ：今日のバズ作品 ====================== -->
     <div id="page0">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2">今日のバズ作品</h1>
+        <p class="text-zinc-400 text-lg">Xで今話題のAV作品を毎日更新しています</p>
+      </div>
+      <div id="buzGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- JSで18本がここに表示されます -->
+      </div>
+    </div>
+
+    <!-- ====================== 診断ページ（page1に移動） ====================== -->
+    <div id="page1" class="hidden">
       <div class="flex justify-center gap-2 mb-10 bg-zinc-900 p-1 rounded-3xl max-w-md mx-auto">
         <button onclick="switchTab(0)" class="tab active px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab0">検索診断</button>
         <button onclick="switchTab(1)" class="tab px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab1">タグ診断</button>
         <button onclick="switchTab(2)" class="tab px-8 py-4 rounded-3xl text-base font-medium flex-1" id="tab2">ランダム</button>
       </div>
-
       <div class="flex justify-center gap-3 mb-8 flex-wrap">
         <button onclick="setSource('fanza')" class="source-btn active px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="fanzaBtn">FANZA</button>
         <button onclick="setSource('mgs')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="mgsBtn">MGS</button>
         <button onclick="setSource('duga')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="dugaBtn">DUGA</button>
         <button onclick="setSource('sokmil')" class="source-btn px-6 py-3 rounded-full bg-zinc-800 text-sm font-medium" id="sokmilBtn">SOKMIL</button>
       </div>
-
       <div id="mode0" class="max-w-xl mx-auto">
         <input id="quickInput" type="text" placeholder="例：清楚巨乳で短めがいい" class="w-full bg-zinc-900 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-5 text-lg outline-none">
         <button onclick="quickDiagnose()" class="mt-6 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">今すぐ検索する</button>
       </div>
-
       <div id="mode1" class="hidden max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-8">
         <p class="font-medium mb-4">ジャンル（複数OK）</p>
         <div class="grid grid-cols-3 gap-3 max-h-[420px] overflow-y-auto pr-2 custom-scroll">
@@ -127,32 +135,26 @@
         </div>
         <button onclick="fullDiagnose()" class="mt-8 w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">このタグで診断する</button>
       </div>
-
       <div id="mode2" class="hidden text-center">
         <button onclick="randomPick()" class="w-full max-w-md mx-auto bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">ランダムでおすすめする！</button>
       </div>
-
       <div class="mt-12">
         <h2 class="text-2xl font-medium mb-6">今すぐおすすめ</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="recommendGrid"></div>
       </div>
-
       <div id="resultArea" class="hidden mt-12">
         <h2 class="text-2xl font-medium mb-6">診断結果（5本）</h2>
         <div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
       </div>
     </div>
 
-    <!-- 名前検索ページ（タイトルなし・検索窓とボタンを縦並びで中央配置） -->
+    <!-- 以降のページはあなたのコード通り全部そのまま（省略ゼロ） -->
+    <!-- 名前検索ページ -->
     <div id="page5" class="hidden max-w-6xl mx-auto">
       <div class="max-w-md mx-auto">
-        <input id="actressSearch" type="text" placeholder="女優名を入力" 
-               class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-4 text-base outline-none mb-3">
-        <button onclick="searchActress()" 
-                class="w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
+        <input id="actressSearch" type="text" placeholder="女優名を入力" class="w-full bg-zinc-800 border border-zinc-700 focus:border-rose-500 rounded-3xl px-6 py-4 text-base outline-none mb-3">
+        <button onclick="searchActress()" class="w-full bg-rose-600 hover:bg-rose-500 py-6 rounded-3xl text-xl font-medium">検索する</button>
       </div>
-
-      <!-- 結果ゾーン（診断ページと同じ大きいサイズ） -->
       <div id="actressResults" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
     </div>
 
