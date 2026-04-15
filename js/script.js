@@ -199,7 +199,9 @@ function switchLaterTab(n) {
 
 // 起動
 loadVideos().then(() => {
-  initBuzPage();        // ← バズ作品ページを最初に表示
+  initBuzPage();        // ← これが大事！バズ作品ページを表示
+  switchPage(0);
+});
   switchPage(0);
 });
   switchPage(0);
