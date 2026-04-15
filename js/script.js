@@ -1,4 +1,4 @@
-// js/script.js  v56 - 検索診断 精度大幅向上版
+// js/script.js  v59 - バズ作品ページ完全対応版（省略ゼロ）
 let currentSource = "fanza";
 let savedVideos = [];
 let allVideos = [];
@@ -86,53 +86,50 @@ function createCard(v) {
   </div>`;
 }
 
+// ====================== バズ作品ページ用 ======================
+async function initBuzPage() {
+  const grid = document.getElementById('buzGrid');
+  if (!grid) return;
+  if (allVideos.length === 0) await loadVideos();
+  grid.innerHTML = allVideos.map(v => createCard(v)).join('');
+}
+
+// ====================== 診断ページ用 ======================
 async function initRecommend() {
   const grid = document.getElementById('recommendGrid');
   if (!grid) return;
   if (allVideos.length === 0) await loadVideos();
-
   let videos = allVideos.filter(v => v.source === currentSource.toUpperCase());
   if (videos.length === 0) videos = allVideos;
-
   grid.innerHTML = videos.map(v => createCard(v)).join('');
 }
 
-// 検索診断 - 精度大幅向上（タイトル + 女優名 + タグの3つを検索）
 function quickDiagnose() {
   const keyword = document.getElementById('quickInput').value.trim();
   if (!keyword) {
     initRecommend();
     return;
   }
-
   const lowerKeyword = keyword.toLowerCase();
-
   const filtered = allVideos.filter(v => {
-    // タイトル検索
     if (v.title && v.title.toLowerCase().includes(lowerKeyword)) return true;
-    // 女優名検索
     if (v.actress && v.actress.toLowerCase().includes(lowerKeyword)) return true;
-    // タグ検索（配列の中から1つでも一致したらOK）
     if (v.tags && v.tags.some(tag => tag.toLowerCase().includes(lowerKeyword))) return true;
     return false;
   });
-
   showResults(filtered);
 }
 
 function fullDiagnose() {
   const selected = Array.from(document.querySelectorAll('#mode1 input[type="checkbox"]:checked'))
     .map(cb => cb.value);
-
   if (selected.length === 0) {
     initRecommend();
     return;
   }
-
   const filtered = allVideos.filter(v => {
     return v.tags && selected.every(tag => v.tags.includes(tag));
   });
-
   showResults(filtered);
 }
 
@@ -156,21 +153,17 @@ function searchActress() {
   const keyword = document.getElementById('actressSearch').value.trim();
   const resultsArea = document.getElementById('actressResults');
   if (!resultsArea) return;
-
   if (!keyword) {
     resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">女優名を入力してください</p>`;
     return;
   }
-
-  const filtered = allVideos.filter(v => 
+  const filtered = allVideos.filter(v =>
     v.actress && v.actress.toLowerCase().includes(keyword.toLowerCase())
   );
-
   if (filtered.length === 0) {
     resultsArea.innerHTML = `<p class="text-zinc-400 text-center py-12">該当する作品が見つかりませんでした</p>`;
     return;
   }
-
   resultsArea.innerHTML = filtered.map(v => createCard(v)).join('');
 }
 
@@ -185,11 +178,9 @@ function switchPage(n) {
   document.querySelectorAll('#page0,#page1,#page2,#page3,#page5,#page6,#page14').forEach(p => p.classList.add('hidden'));
   const target = document.getElementById('page' + n);
   if (target) target.classList.remove('hidden');
-
   document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
   const activeBtn = document.getElementById('nav' + n);
   if (activeBtn) activeBtn.classList.add('active');
-
   if (n === 14) {
     renderMyList();
     renderEveryoneList();
@@ -200,9 +191,16 @@ function switchRankTab(n) {
   document.querySelectorAll('.rank-tab').forEach((t, i) => t.classList.toggle('active', i === n));
 }
 
+function switchLaterTab(n) {
+  document.getElementById('myListTab').classList.toggle('hidden', n !== 0);
+  document.getElementById('everyoneListTab').classList.toggle('hidden', n !== 1);
+  document.querySelectorAll('.later-tab').forEach((t, i) => t.classList.toggle('active', i === n));
+}
+
 // 起動
 loadVideos().then(() => {
-  initRecommend();
-  switchTab(0);
+  initBuzPage();        // ← バズ作品ページを最初に表示
+  switchPage(0);
+});
   switchPage(0);
 });
